@@ -1,0 +1,40 @@
+---
+title: "Pokemon Go Type Analysis"
+author: "darthaline"
+date: "28 Sept 2020"
+output:
+  html_notebook:
+    toc: true
+---
+
+# Pokemon Go Type Analysis
+
+## DPS data lvl 40
+
+```{r DPSData}
+theurl <- "https://gamepress.gg/pokemongo/comprehensive-dps-spreadsheet"
+dpsData <- read.csv(file.path('data', 'comprehensive_dps.csv'))
+rm(theurl)
+```
+
+```{r StatsData}
+theurl <- "https://www.kaggle.com/netzuel/pokmon-go-dataset-15-generations"
+statsData <- read.csv(file.path('data', 'pogo.csv'))
+rm(theurl)
+
+types <- unique(statsData$Primary)
+```
+
+```{r typeData}
+library(rvest)
+
+theurl <- "https://pokemondb.net/pokedex/all"
+source_tables <- read_html(theurl)
+typeData <- html_nodes(source_tables, ".data-table")
+typeData <- html_table(typeData[[1]], fill = TRUE)
+
+write.table(typeData, file = file.path('data', 'pokedex.csv'), sep = '\t')
+
+rm(theurl, source_tables)
+```
+
