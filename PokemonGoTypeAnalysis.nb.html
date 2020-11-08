@@ -1754,6 +1754,7 @@ summary {
 <ul>
 <li><a href="#pokemon-go-type-analysis">Pokemon Go Type Analysis</a><ul>
 <li><a href="#dps-data-lvl-40">DPS data lvl 40</a></li>
+<li><a href="#typing-data">Typing data</a></li>
 </ul></li>
 </ul>
 </div>
@@ -1765,48 +1766,99 @@ summary {
 <h2>DPS data lvl 40</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZHBzRGF0YSA8LSByZWFkLmNzdihmaWxlLnBhdGgoJ2RhdGEnLCAnY29tcHJlaGVuc2l2ZV9kcHMuY3N2JykpXG5gYGAifQ== -->
-<pre class="r"><code>dpsData &lt;- read.csv(file.path(&#39;data&#39;, &#39;comprehensive_dps.csv&#39;))</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudGhldXJsIDwtIFwiaHR0cHM6Ly9nYW1lcHJlc3MuZ2cvcG9rZW1vbmdvL2NvbXByZWhlbnNpdmUtZHBzLXNwcmVhZHNoZWV0XCJcbmRwc0RhdGEgPC0gcmVhZC5jc3YoZmlsZS5wYXRoKCdkYXRhJywgJ2NvbXByZWhlbnNpdmVfZHBzLmNzdicpKVxucm0odGhldXJsKVxuYGBgIn0= -->
+<pre class="r"><code>theurl &lt;- &quot;https://gamepress.gg/pokemongo/comprehensive-dps-spreadsheet&quot;
+dpsData &lt;- read.csv(file.path(&#39;data&#39;, &#39;comprehensive_dps.csv&#39;))
+rm(theurl)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
+</div>
+<div id="typing-data" class="section level2">
+<h2>Typing data</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudGhldXJsIDwtIFwiaHR0cHM6Ly93d3cua2FnZ2xlLmNvbS9uZXR6dWVsL3Bva21vbi1nby1kYXRhc2V0LTE1LWdlbmVyYXRpb25zXCJcbnN0YXRzRGF0YSA8LSByZWFkLmNzdihmaWxlLnBhdGgoJ2RhdGEnLCAncG9nby5jc3YnKSlcbnJtKHRoZXVybClcblxudHlwZXMgPC0gdW5pcXVlKHN0YXRzRGF0YSRQcmltYXJ5KVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudGhldXJsIDwtIFwiaHR0cHM6Ly93d3cua2FnZ2xlLmNvbS9uZXR6dWVsL3Bva21vbi1nby1kYXRhc2V0LTE1LWdlbmVyYXRpb25zXCJcbnN0YXRzRGF0YSA8LSByZWFkLmNzdihmaWxlLnBhdGgoJ2RhdGEnLCAncG9nby5jc3YnKSlcbnJtKHRoZXVybClcblxudHlwZXMgPC0gdW5pcXVlKHN0YXRzRGF0YSRQcmltYXJ5KVxuc3RhdHNEYXRhJFNlY29uZGFyeVtzdGF0c0RhdGEkU2Vjb25kYXJ5ID09ICdOb25lJ10gPC0gTkFcbmBgYCJ9 -->
 <pre class="r"><code>theurl &lt;- &quot;https://www.kaggle.com/netzuel/pokmon-go-dataset-15-generations&quot;
 statsData &lt;- read.csv(file.path(&#39;data&#39;, &#39;pogo.csv&#39;))
 rm(theurl)
 
-types &lt;- unique(statsData$Primary)</code></pre>
+types &lt;- unique(statsData$Primary)
+statsData$Secondary[statsData$Secondary == &#39;None&#39;] &lt;- NA</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShydmVzdClcbmBgYCJ9 -->
-<pre class="r"><code>library(rvest)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoicGFja2FnZSDjpLzjuLFydmVzdOOkvOO4siB3YXMgYnVpbHQgdW5kZXIgUiB2ZXJzaW9uIDMuNi4zTG9hZGluZyByZXF1aXJlZCBwYWNrYWdlOiB4bWwyXG5wYWNrYWdlIOOkvOO4sXhtbDLjpLzjuLIgd2FzIGJ1aWx0IHVuZGVyIFIgdmVyc2lvbiAzLjYuM1xuIn0= -->
-<pre><code>package 㤼㸱rvest㤼㸲 was built under R version 3.6.3Loading required package: xml2
-package 㤼㸱xml2㤼㸲 was built under R version 3.6.3</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudGhldXJsIDwtIFwiaHR0cHM6Ly9wb2tlbW9uZGIubmV0L3Bva2VkZXgvYWxsXCJcbnNvdXJjZV90YWJsZXMgPC0gcmVhZF9odG1sKHRoZXVybClcbnR5cGVEYXRhIDwtIGh0bWxfbm9kZXMoc291cmNlX3RhYmxlcywgXCIuZGF0YS10YWJsZVwiKVxudHlwZURhdGEgPC0gaHRtbF90YWJsZSh0eXBlRGF0YVtbMV1dLCBmaWxsID0gVFJVRSlcblxud3JpdGUudGFibGUodHlwZURhdGEsIGZpbGUgPSBmaWxlLnBhdGgoJ2RhdGEnLCAncG9rZWRleC5jc3YnKSlcblxucm0odGhldXJsLCBzb3VyY2VfdGFibGVzKVxuYGBgIn0= -->
-<pre class="r"><code>theurl &lt;- &quot;https://pokemondb.net/pokedex/all&quot;
+<!-- rnb-source-begin eyJkYXRhIjpbImxpYnJhcnkocnZlc3QpIiwiIiwidGhldXJsIDwtIFwiaHR0cHM6Ly9wb2tlbW9uZGIubmV0L3Bva2VkZXgvYWxsXCIiLCJzb3VyY2VfdGFibGVzIDwtIHJlYWRfaHRtbCh0aGV1cmwpIiwidHlwZURhdGEgPC0gaHRtbF9ub2Rlcyhzb3VyY2VfdGFibGVzLCBcIi5kYXRhLXRhYmxlXCIpIiwidHlwZURhdGEgPC0gaHRtbF90YWJsZSh0eXBlRGF0YVtbMV1dLCBmaWxsID0gVFJVRSkiLCIiLCJ3cml0ZS50YWJsZSh0eXBlRGF0YSwgZmlsZSA9IGZpbGUucGF0aCgnZGF0YScsICdwb2tlZGV4LmNzdicpLCBzZXAgPSAnLCcsIHJvdy5uYW1lcz1GQUxTRSkiLCIiLCJybSh0aGV1cmwsIHNvdXJjZV90YWJsZXMpIl19 -->
+<pre class="r"><code>library(rvest)
+
+theurl &lt;- &quot;https://pokemondb.net/pokedex/all&quot;
 source_tables &lt;- read_html(theurl)
 typeData &lt;- html_nodes(source_tables, &quot;.data-table&quot;)
 typeData &lt;- html_table(typeData[[1]], fill = TRUE)
 
-write.table(typeData, file = file.path(&#39;data&#39;, &#39;pokedex.csv&#39;))
+write.table(typeData, file = file.path(&#39;data&#39;, &#39;pokedex.csv&#39;), sep = &#39;,&#39;, row.names=FALSE)
 
 rm(theurl, source_tables)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudGhldXJsIDwtIFwiaHR0cHM6Ly9kb2NzLmdvb2dsZS5jb20vc3ByZWFkc2hlZXRzL2QvMWRsWHItaTMwMEhBV0Vla0tRbHRkSlFzbGw3a2VvS2hzanVSREtmdDJGMFUvZWRpdD91c3A9c2hhcmluZ1wiXG5lZmZlY3RpdmVuZXNzRGF0YSA8LSByZWFkLmNzdihmaWxlLnBhdGgoJ2RhdGEnLCAncG9rZW1vbiBnbyB0eXBlIGVmZmVjdGl2ZW5lc3MgY2hhcnQuY3N2JyksIHNraXAgPSA0KVxucm0odGhldXJsKVxuXG5lZmZlY3RpdmVuZXNzRGF0YSA8LSBlZmZlY3RpdmVuZXNzRGF0YVshbmFtZXMoZWZmZWN0aXZlbmVzc0RhdGEpICVpbiUgYygncG9pc29uLmRhcmsnLCAnZ2VvbS5hdHQnKV1cbmVmZmVjdGl2ZW5lc3NEYXRhIDwtIGVmZmVjdGl2ZW5lc3NEYXRhWy1kaW0oZWZmZWN0aXZlbmVzc0RhdGEpWzJdLF1cbmBgYCJ9 -->
+<pre class="r"><code>theurl &lt;- &quot;https://docs.google.com/spreadsheets/d/1dlXr-i300HAWEekKQltdJQsll7keoKhsjuRDKft2F0U/edit?usp=sharing&quot;
+effectivenessData &lt;- read.csv(file.path(&#39;data&#39;, &#39;pokemon go type effectiveness chart.csv&#39;), skip = 4)
+rm(theurl)
+
+effectivenessData &lt;- effectivenessData[!names(effectivenessData) %in% c(&#39;poison.dark&#39;, &#39;geom.att&#39;)]
+effectivenessData &lt;- effectivenessData[-dim(effectivenessData)[2],]</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucG9rZW1vbiA8LSAnU3R1bmt5J1xucG9rZW1vblR5cGVzIDwtIGMoYXMuY2hhcmFjdGVyKHN0YXRzRGF0YVtzdGF0c0RhdGEkTmFtZSA9PSBwb2tlbW9uLF0kUHJpbWFyeSksXG4gICAgICAgICAgICAgICBhcy5jaGFyYWN0ZXIoc3RhdHNEYXRhW3N0YXRzRGF0YSROYW1lID09IHBva2Vtb24sXSRTZWNvbmRhcnkpKVxucG9rZW1vblR5cGVzIDwtIHBva2Vtb25UeXBlc1shaXMubmEocG9rZW1vblR5cGVzKV1cbnBva2Vtb25UeXBlcyA8LSB0b2xvd2VyKHBva2Vtb25UeXBlcylcblxuIyBmb3IgKGkgaW4gMTpsZW5ndGgobW92ZVR5cGVzKSl7XG4jICAgICB0ZW1wRWZmZWN0aXZlbmVzcyA8LSBlZmZlY3RpdmVuZXNzRGF0YVtlZmZlY3RpdmVuZXNzRGF0YSRhdHRhY2tpbmcuZGVmZW5kaW5nID09IG1vdmVUeXBlc1tpXSxdXG4jICAgICByZXNpc3RlZEJ5IDwtIHRlbXBFZmZlY3RpdmVuZXNzWyxpcy5uYSh0ZW1wRWZmZWN0aXZlbmVzcyA8IDEpIHwgKHRlbXBFZmZlY3RpdmVuZXNzIDwgMSldXG4jICAgICBwcmludChyZXNpc3RlZEJ5KVxuIyAgICAgZWZmZWN0aXZlQWdhaW5zdCA8LSB0ZW1wRWZmZWN0aXZlbmVzc1ssaXMubmEodGVtcEVmZmVjdGl2ZW5lc3MgPiAxKSB8ICh0ZW1wRWZmZWN0aXZlbmVzcyA+IDEpXVxuIyAgICAgcHJpbnQoZWZmZWN0aXZlQWdhaW5zdClcbiMgfVxuXG4jaW5wdXQgMiBtb3ZldHlwZXNcbm1vdmVUeXBlcyA8LSBjKCdkYXJrJywgJ3BvaXNvbicpICAjZmlndGluZyBpcyBqdXN0IGZvciBleGFtcGxlIGhlcmVcblxuI3NlbGVjdGluZyBtb3ZlVHlwZXNcbnRlbXBFZmZlY3RpdmVuZXNzIDwtIGVmZmVjdGl2ZW5lc3NEYXRhW2VmZmVjdGl2ZW5lc3NEYXRhJGF0dGFja2luZy5kZWZlbmRpbmcgJWluJSBtb3ZlVHlwZXMsXVxuXG4jIGNhbGN1bGF0aW5nIHRoZSBwcm9kdWN0IG9mIHRoZSB0d28gbW92ZXR5cGVzXG50ZW1wRWZmZWN0aXZlbmVzc1Byb2R1Y3QgPC0gdW5saXN0KGxhcHBseSh0ZW1wRWZmZWN0aXZlbmVzc1shbmFtZXModGVtcEVmZmVjdGl2ZW5lc3MpICVpbiUgYygnYXR0YWNraW5nLmRlZmVuZGluZycpXSwgcHJvZCkpXG5cbiMgcmVtb3ZpbmcgZmFjdG9yaW5nXG50ZW1wRWZmZWN0aXZlbmVzcyRhdHRhY2tpbmcuZGVmZW5kaW5nIDwtIGFzLmNoYXJhY3Rlcih0ZW1wRWZmZWN0aXZlbmVzcyRhdHRhY2tpbmcuZGVmZW5kaW5nKVxuXG4jbWVyZ2luZyBtb3ZldHlwZXMgdG8gbWFrZSBhIG5hbWUgaW4gdGhlIGRhdGEgZnJhbWVcbnJvd3RpdGxlUHJvZHVjdCA8LSBwYXN0ZShtb3ZlVHlwZXMsIGNvbGxhcHNlID0gJyYnKVxudGVtcEVmZmVjdGl2ZW5lc3MgPC0gcmJpbmQodGVtcEVmZmVjdGl2ZW5lc3MsIGMocm93dGl0bGVQcm9kdWN0LCB0ZW1wRWZmZWN0aXZlbmVzc1Byb2R1Y3QpKVxuXG4jIHNlbGVjdGluZyBjb2x1bW5zIHdoaWNoIHByb3ZpZGUgZGVmZW5jZSBhZ2FpbnN0IGNvbWJpbmF0aW9uIG9mIHRob3NlIG1vdmUgdHlwZXNcbnRlbXBFZmZlY3RpdmVuZXNzIDwtIHRlbXBFZmZlY3RpdmVuZXNzWywgY29sbmFtZXModGVtcEVmZmVjdGl2ZW5lc3MpID09ICdhdHRhY2tpbmcuZGVmZW5kaW5nJyB8XG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHRlbXBFZmZlY3RpdmVuZXNzW3RlbXBFZmZlY3RpdmVuZXNzJGF0dGFja2luZy5kZWZlbmRpbmcgPT0gcm93dGl0bGVQcm9kdWN0LF0gPCAxXVxuXG5cbmBgYCJ9 -->
+<pre class="r"><code>pokemon &lt;- &#39;Stunky&#39;
+pokemonTypes &lt;- c(as.character(statsData[statsData$Name == pokemon,]$Primary),
+               as.character(statsData[statsData$Name == pokemon,]$Secondary))
+pokemonTypes &lt;- pokemonTypes[!is.na(pokemonTypes)]
+pokemonTypes &lt;- tolower(pokemonTypes)
+
+# for (i in 1:length(moveTypes)){
+#     tempEffectiveness &lt;- effectivenessData[effectivenessData$attacking.defending == moveTypes[i],]
+#     resistedBy &lt;- tempEffectiveness[,is.na(tempEffectiveness &lt; 1) | (tempEffectiveness &lt; 1)]
+#     print(resistedBy)
+#     effectiveAgainst &lt;- tempEffectiveness[,is.na(tempEffectiveness &gt; 1) | (tempEffectiveness &gt; 1)]
+#     print(effectiveAgainst)
+# }
+
+#input 2 movetypes
+moveTypes &lt;- c(&#39;dark&#39;, &#39;poison&#39;)  #figting is just for example here
+
+#selecting moveTypes
+tempEffectiveness &lt;- effectivenessData[effectivenessData$attacking.defending %in% moveTypes,]
+
+# calculating the product of the two movetypes
+tempEffectivenessProduct &lt;- unlist(lapply(tempEffectiveness[!names(tempEffectiveness) %in% c(&#39;attacking.defending&#39;)], prod))
+
+# removing factoring
+tempEffectiveness$attacking.defending &lt;- as.character(tempEffectiveness$attacking.defending)
+
+#merging movetypes to make a name in the data frame
+rowtitleProduct &lt;- paste(moveTypes, collapse = &#39;&amp;&#39;)
+tempEffectiveness &lt;- rbind(tempEffectiveness, c(rowtitleProduct, tempEffectivenessProduct))
+
+# selecting columns which provide defence against combination of those move types
+tempEffectiveness &lt;- tempEffectiveness[, colnames(tempEffectiveness) == &#39;attacking.defending&#39; |
+                                         tempEffectiveness[tempEffectiveness$attacking.defending == rowtitleProduct,] &lt; 1]
+</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
 </div>
 </div>
 
-<div id="rmd-source-code">LS0tDQp0aXRsZTogIlBva2Vtb24gR28gVHlwZSBBbmFseXNpcyINCmF1dGhvcjogImRhcnRoYWxpbmUiDQpkYXRlOiAiMjggU2VwdCAyMDIwIg0Kb3V0cHV0Og0KICBodG1sX25vdGVib29rOg0KICAgIHRvYzogdHJ1ZQ0KLS0tDQoNCiMgUG9rZW1vbiBHbyBUeXBlIEFuYWx5c2lzDQoNCiMjIERQUyBkYXRhIGx2bCA0MA0KDQpgYGB7ciBEUFNEYXRhfQ0KdGhldXJsIDwtICJodHRwczovL2dhbWVwcmVzcy5nZy9wb2tlbW9uZ28vY29tcHJlaGVuc2l2ZS1kcHMtc3ByZWFkc2hlZXQiDQpkcHNEYXRhIDwtIHJlYWQuY3N2KGZpbGUucGF0aCgnZGF0YScsICdjb21wcmVoZW5zaXZlX2Rwcy5jc3YnKSkNCnJtKHRoZXVybCkNCmBgYA0KDQpgYGB7ciBTdGF0c0RhdGF9DQp0aGV1cmwgPC0gImh0dHBzOi8vd3d3LmthZ2dsZS5jb20vbmV0enVlbC9wb2ttb24tZ28tZGF0YXNldC0xNS1nZW5lcmF0aW9ucyINCnN0YXRzRGF0YSA8LSByZWFkLmNzdihmaWxlLnBhdGgoJ2RhdGEnLCAncG9nby5jc3YnKSkNCnJtKHRoZXVybCkNCg0KdHlwZXMgPC0gdW5pcXVlKHN0YXRzRGF0YSRQcmltYXJ5KQ0KYGBgDQoNCmBgYHtyIHR5cGVEYXRhfQ0KbGlicmFyeShydmVzdCkNCg0KdGhldXJsIDwtICJodHRwczovL3Bva2Vtb25kYi5uZXQvcG9rZWRleC9hbGwiDQpzb3VyY2VfdGFibGVzIDwtIHJlYWRfaHRtbCh0aGV1cmwpDQp0eXBlRGF0YSA8LSBodG1sX25vZGVzKHNvdXJjZV90YWJsZXMsICIuZGF0YS10YWJsZSIpDQp0eXBlRGF0YSA8LSBodG1sX3RhYmxlKHR5cGVEYXRhW1sxXV0sIGZpbGwgPSBUUlVFKQ0KDQp3cml0ZS50YWJsZSh0eXBlRGF0YSwgZmlsZSA9IGZpbGUucGF0aCgnZGF0YScsICdwb2tlZGV4LmNzdicpLCBzZXAgPSAnXHQnKQ0KDQpybSh0aGV1cmwsIHNvdXJjZV90YWJsZXMpDQpgYGANCg0K</div>
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIlBva2Vtb24gR28gVHlwZSBBbmFseXNpcyINCmF1dGhvcjogImRhcnRoYWxpbmUiDQpkYXRlOiAiMjggU2VwdCAyMDIwIg0Kb3V0cHV0Og0KICBodG1sX25vdGVib29rOg0KICAgIHRvYzogdHJ1ZQ0KLS0tDQojIFBva2Vtb24gR28gVHlwZSBBbmFseXNpcw0KDQojIyBEUFMgZGF0YSBsdmwgNDANCg0KYGBge3IgRFBTRGF0YX0NCnRoZXVybCA8LSAiaHR0cHM6Ly9nYW1lcHJlc3MuZ2cvcG9rZW1vbmdvL2NvbXByZWhlbnNpdmUtZHBzLXNwcmVhZHNoZWV0Ig0KZHBzRGF0YSA8LSByZWFkLmNzdihmaWxlLnBhdGgoJ2RhdGEnLCAnY29tcHJlaGVuc2l2ZV9kcHMuY3N2JykpDQpybSh0aGV1cmwpDQpgYGANCg0KIyMgVHlwaW5nIGRhdGENCg0KYGBge3IgU3RhdHNEYXRhfQ0KdGhldXJsIDwtICJodHRwczovL3d3dy5rYWdnbGUuY29tL25ldHp1ZWwvcG9rbW9uLWdvLWRhdGFzZXQtMTUtZ2VuZXJhdGlvbnMiDQpzdGF0c0RhdGEgPC0gcmVhZC5jc3YoZmlsZS5wYXRoKCdkYXRhJywgJ3BvZ28uY3N2JykpDQpybSh0aGV1cmwpDQoNCnR5cGVzIDwtIHVuaXF1ZShzdGF0c0RhdGEkUHJpbWFyeSkNCnN0YXRzRGF0YSRTZWNvbmRhcnlbc3RhdHNEYXRhJFNlY29uZGFyeSA9PSAnTm9uZSddIDwtIE5BDQpgYGANCg0KYGBge3IgdHlwZURhdGEsIGV2YWw9RkFMU0V9DQpsaWJyYXJ5KHJ2ZXN0KQ0KDQp0aGV1cmwgPC0gImh0dHBzOi8vcG9rZW1vbmRiLm5ldC9wb2tlZGV4L2FsbCINCnNvdXJjZV90YWJsZXMgPC0gcmVhZF9odG1sKHRoZXVybCkNCnR5cGVEYXRhIDwtIGh0bWxfbm9kZXMoc291cmNlX3RhYmxlcywgIi5kYXRhLXRhYmxlIikNCnR5cGVEYXRhIDwtIGh0bWxfdGFibGUodHlwZURhdGFbWzFdXSwgZmlsbCA9IFRSVUUpDQoNCndyaXRlLnRhYmxlKHR5cGVEYXRhLCBmaWxlID0gZmlsZS5wYXRoKCdkYXRhJywgJ3Bva2VkZXguY3N2JyksIHNlcCA9ICcsJywgcm93Lm5hbWVzPUZBTFNFKQ0KDQpybSh0aGV1cmwsIHNvdXJjZV90YWJsZXMpDQpgYGANCg0KYGBge3IgZWZmZWN0aXZlbmVzc0RhdGF9DQp0aGV1cmwgPC0gImh0dHBzOi8vZG9jcy5nb29nbGUuY29tL3NwcmVhZHNoZWV0cy9kLzFkbFhyLWkzMDBIQVdFZWtLUWx0ZEpRc2xsN2tlb0toc2p1UkRLZnQyRjBVL2VkaXQ/dXNwPXNoYXJpbmciDQplZmZlY3RpdmVuZXNzRGF0YSA8LSByZWFkLmNzdihmaWxlLnBhdGgoJ2RhdGEnLCAncG9rZW1vbiBnbyB0eXBlIGVmZmVjdGl2ZW5lc3MgY2hhcnQuY3N2JyksIHNraXAgPSA0KQ0Kcm0odGhldXJsKQ0KDQplZmZlY3RpdmVuZXNzRGF0YSA8LSBlZmZlY3RpdmVuZXNzRGF0YVshbmFtZXMoZWZmZWN0aXZlbmVzc0RhdGEpICVpbiUgYygncG9pc29uLmRhcmsnLCAnZ2VvbS5hdHQnKV0NCmVmZmVjdGl2ZW5lc3NEYXRhIDwtIGVmZmVjdGl2ZW5lc3NEYXRhWy1kaW0oZWZmZWN0aXZlbmVzc0RhdGEpWzJdLF0NCmBgYA0KDQoNCmBgYHtyIHdhcm5pbmc9RkFMU0V9DQpwb2tlbW9uIDwtICdTdHVua3knDQpwb2tlbW9uVHlwZXMgPC0gYyhhcy5jaGFyYWN0ZXIoc3RhdHNEYXRhW3N0YXRzRGF0YSROYW1lID09IHBva2Vtb24sXSRQcmltYXJ5KSwNCiAgICAgICAgICAgICAgIGFzLmNoYXJhY3RlcihzdGF0c0RhdGFbc3RhdHNEYXRhJE5hbWUgPT0gcG9rZW1vbixdJFNlY29uZGFyeSkpDQpwb2tlbW9uVHlwZXMgPC0gcG9rZW1vblR5cGVzWyFpcy5uYShwb2tlbW9uVHlwZXMpXQ0KcG9rZW1vblR5cGVzIDwtIHRvbG93ZXIocG9rZW1vblR5cGVzKQ0KDQojIGZvciAoaSBpbiAxOmxlbmd0aChtb3ZlVHlwZXMpKXsNCiMgICAgIHRlbXBFZmZlY3RpdmVuZXNzIDwtIGVmZmVjdGl2ZW5lc3NEYXRhW2VmZmVjdGl2ZW5lc3NEYXRhJGF0dGFja2luZy5kZWZlbmRpbmcgPT0gbW92ZVR5cGVzW2ldLF0NCiMgICAgIHJlc2lzdGVkQnkgPC0gdGVtcEVmZmVjdGl2ZW5lc3NbLGlzLm5hKHRlbXBFZmZlY3RpdmVuZXNzIDwgMSkgfCAodGVtcEVmZmVjdGl2ZW5lc3MgPCAxKV0NCiMgICAgIHByaW50KHJlc2lzdGVkQnkpDQojICAgICBlZmZlY3RpdmVBZ2FpbnN0IDwtIHRlbXBFZmZlY3RpdmVuZXNzWyxpcy5uYSh0ZW1wRWZmZWN0aXZlbmVzcyA+IDEpIHwgKHRlbXBFZmZlY3RpdmVuZXNzID4gMSldDQojICAgICBwcmludChlZmZlY3RpdmVBZ2FpbnN0KQ0KIyB9DQoNCiNpbnB1dCAyIG1vdmV0eXBlcw0KbW92ZVR5cGVzIDwtIGMoJ2RhcmsnLCAncG9pc29uJykgICNmaWd0aW5nIGlzIGp1c3QgZm9yIGV4YW1wbGUgaGVyZQ0KDQojc2VsZWN0aW5nIG1vdmVUeXBlcw0KdGVtcEVmZmVjdGl2ZW5lc3MgPC0gZWZmZWN0aXZlbmVzc0RhdGFbZWZmZWN0aXZlbmVzc0RhdGEkYXR0YWNraW5nLmRlZmVuZGluZyAlaW4lIG1vdmVUeXBlcyxdDQoNCiMgY2FsY3VsYXRpbmcgdGhlIHByb2R1Y3Qgb2YgdGhlIHR3byBtb3ZldHlwZXMNCnRlbXBFZmZlY3RpdmVuZXNzUHJvZHVjdCA8LSB1bmxpc3QobGFwcGx5KHRlbXBFZmZlY3RpdmVuZXNzWyFuYW1lcyh0ZW1wRWZmZWN0aXZlbmVzcykgJWluJSBjKCdhdHRhY2tpbmcuZGVmZW5kaW5nJyldLCBwcm9kKSkNCg0KIyByZW1vdmluZyBmYWN0b3JpbmcNCnRlbXBFZmZlY3RpdmVuZXNzJGF0dGFja2luZy5kZWZlbmRpbmcgPC0gYXMuY2hhcmFjdGVyKHRlbXBFZmZlY3RpdmVuZXNzJGF0dGFja2luZy5kZWZlbmRpbmcpDQoNCiNtZXJnaW5nIG1vdmV0eXBlcyB0byBtYWtlIGEgbmFtZSBpbiB0aGUgZGF0YSBmcmFtZQ0Kcm93dGl0bGVQcm9kdWN0IDwtIHBhc3RlKG1vdmVUeXBlcywgY29sbGFwc2UgPSAnJicpDQp0ZW1wRWZmZWN0aXZlbmVzcyA8LSByYmluZCh0ZW1wRWZmZWN0aXZlbmVzcywgYyhyb3d0aXRsZVByb2R1Y3QsIHRlbXBFZmZlY3RpdmVuZXNzUHJvZHVjdCkpDQoNCiMgc2VsZWN0aW5nIGNvbHVtbnMgd2hpY2ggcHJvdmlkZSBkZWZlbmNlIGFnYWluc3QgY29tYmluYXRpb24gb2YgdGhvc2UgbW92ZSB0eXBlcw0KdGVtcEVmZmVjdGl2ZW5lc3MgPC0gdGVtcEVmZmVjdGl2ZW5lc3NbLCBjb2xuYW1lcyh0ZW1wRWZmZWN0aXZlbmVzcykgPT0gJ2F0dGFja2luZy5kZWZlbmRpbmcnIHwNCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgdGVtcEVmZmVjdGl2ZW5lc3NbdGVtcEVmZmVjdGl2ZW5lc3MkYXR0YWNraW5nLmRlZmVuZGluZyA9PSByb3d0aXRsZVByb2R1Y3QsXSA8IDFdDQoNCg0KYGBg</div>
 
 
 

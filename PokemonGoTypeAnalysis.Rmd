@@ -6,7 +6,6 @@ output:
   html_notebook:
     toc: true
 ---
-
 # Pokemon Go Type Analysis
 
 ## DPS data lvl 40
@@ -17,15 +16,18 @@ dpsData <- read.csv(file.path('data', 'comprehensive_dps.csv'))
 rm(theurl)
 ```
 
+## Typing data
+
 ```{r StatsData}
 theurl <- "https://www.kaggle.com/netzuel/pokmon-go-dataset-15-generations"
 statsData <- read.csv(file.path('data', 'pogo.csv'))
 rm(theurl)
 
 types <- unique(statsData$Primary)
+statsData$Secondary[statsData$Secondary == 'None'] <- NA
 ```
 
-```{r typeData}
+```{r typeData, eval=FALSE}
 library(rvest)
 
 theurl <- "https://pokemondb.net/pokedex/all"
@@ -33,8 +35,55 @@ source_tables <- read_html(theurl)
 typeData <- html_nodes(source_tables, ".data-table")
 typeData <- html_table(typeData[[1]], fill = TRUE)
 
-write.table(typeData, file = file.path('data', 'pokedex.csv'), sep = '\t')
+write.table(typeData, file = file.path('data', 'pokedex.csv'), sep = ',', row.names=FALSE)
 
 rm(theurl, source_tables)
 ```
 
+```{r effectivenessData}
+theurl <- "https://docs.google.com/spreadsheets/d/1dlXr-i300HAWEekKQltdJQsll7keoKhsjuRDKft2F0U/edit?usp=sharing"
+effectivenessData <- read.csv(file.path('data', 'pokemon go type effectiveness chart.csv'), skip = 4)
+rm(theurl)
+
+effectivenessData <- effectivenessData[!names(effectivenessData) %in% c('poison.dark', 'geom.att')]
+effectivenessData <- effectivenessData[-dim(effectivenessData)[2],]
+```
+
+
+```{r warning=FALSE}
+pokemon <- 'Stunky'
+pokemonTypes <- c(as.character(statsData[statsData$Name == pokemon,]$Primary),
+               as.character(statsData[statsData$Name == pokemon,]$Secondary))
+pokemonTypes <- pokemonTypes[!is.na(pokemonTypes)]
+pokemonTypes <- tolower(pokemonTypes)
+
+# for (i in 1:length(moveTypes)){
+#     tempEffectiveness <- effectivenessData[effectivenessData$attacking.defending == moveTypes[i],]
+#     resistedBy <- tempEffectiveness[,is.na(tempEffectiveness < 1) | (tempEffectiveness < 1)]
+#     print(resistedBy)
+#     effectiveAgainst <- tempEffectiveness[,is.na(tempEffectiveness > 1) | (tempEffectiveness > 1)]
+#     print(effectiveAgainst)
+# }
+
+#input 2 movetypes
+moveTypes <- c('dark', 'poison')  #figting is just for example here
+
+#selecting moveTypes
+tempEffectiveness <- effectivenessData[effectivenessData$attacking.defending %in% moveTypes,]
+
+# calculating the product of the two movetypes
+tempEffectivenessProduct <- unlist(lapply(tempEffectiveness[!names(tempEffectiveness) %in% c('attacking.defending')], prod))
+
+# removing factoring
+tempEffectiveness$attacking.defending <- as.character(tempEffectiveness$attacking.defending)
+
+#merging movetypes to make a name in the data frame
+rowtitleProduct <- paste(moveTypes, collapse = '&')
+tempEffectiveness <- rbind(tempEffectiveness, c(rowtitleProduct, tempEffectivenessProduct))
+
+# selecting columns which provide defence against combination of those move types
+tempEffectiveness <- tempEffectiveness[, colnames(tempEffectiveness) == 'attacking.defending' |
+                                         tempEffectiveness[tempEffectiveness$attacking.defending == rowtitleProduct,] < 1]
+
+
+```

@@ -1,0 +1,83 @@
+[22:02, 02/11/2020] gracefularchitect: Example:
+[22:02, 02/11/2020] gracefularchitect: I know that a pokemon uses dark
+[22:03, 02/11/2020] gracefularchitect: but can I write I love you in github
+[22:17, 02/11/2020] gracefularchitect: 1) I'm fighting a Stunky
+[22:17, 02/11/2020] gracefularchitect: 2) I know that stunky has moves of two types, dark and poison
+[22:18, 02/11/2020] gracefularchitect: 3) I want to choose a pokemon that resists dark and poison
+[22:19, 02/11/2020] gracefularchitect: 4) I go to the calculator, and plug in the 1, 2 or more types that I want to resist. (In this case it would be dark and poison)
+[22:20, 02/11/2020] gracefularchitect: 5) Calculator takes those inputs (dark & poison) and retrieves the resistances for each
+[22:22, 02/11/2020] gracefularchitect: in this case, dark: resisted by dark (0.625), fairy (0.625) and fighting (0.625). Effective against ghost (1.6) and psychic (1.6)
+[22:24, 02/11/2020] gracefularchitect: poison: resisted by (0.625) ghost, ground, poison and rock, and (.391) steel. Effective against (1.6) fairy and fighting
+[22:26, 02/11/2020] gracefularchitect: 6) Calc then compares resistances, to see what cancels out. For example, Dark is resisted by fighting, but poison is effective against fighting. Therefore resulting resistance is 1, i.e. it does normal damage.
+[22:42, 02/11/2020] gracefularchitect: in this example, whilst dark is resisted by fairy and fighting, Poison is effective against them, meaning that 0.625 * 1.6 = 1.
+[22:43, 02/11/2020] gracefularchitect: Poison is resisted by Ghost, but dark is effective against Ghost. So that cancels out
+[22:44, 02/11/2020] gracefularchitect: We end up with Dark being only resisted by Dark, And Poison only being resisted by Ground, Poison, Rock and Steel
+[22:45, 02/11/2020] gracefularchitect: 7) From this, the calculator concludes that in order to resist dark & poison, they pokemon must be either Dark/Ground, Dark/Poison, Dark/Rock, or Dark/Steel
+[22:46, 02/11/2020] gracefularchitect: 8) The calculator then compares it's search results against the database, returning any pokemon that fit the required profile
+[22:57, 02/11/2020] gracefularchitect: Part 2
+[22:59, 02/11/2020] gracefularchitect: So, the calculator in this case would return: 
+Dark/Ground: Sandile, Krokrok, Krookodile, 
+Dark/Poison: Alolan Grimer, Alolan Muk, Drapion, Stunky, Skuntank, 
+Dark/Rock: Tyranitar, Mega Tyranitar, 
+Dark/Steel: Pawniard, Bisharp
+[23:00, 02/11/2020] gracefularchitect: But wait, just because something is a good defender, doesn't mean it is a good attacker. For example, dark/Poison has a lot of mons, but are they able to do any effective damage, or better yet super effective damge
+[23:28, 02/11/2020] gracefularchitect: hmm this would require a change, 4.5) I Input I'm fighting a Stunky
+[23:30, 02/11/2020] gracefularchitect: 9) Stunky is a Dark/Poison type.
+[23:30, 02/11/2020] gracefularchitect: Dark is weak to (1.6) Bug, Fighting and Fairy, and resists damage from (0.625) Dark, Ghost and (0.391) Psychic
+[23:34, 02/11/2020] gracefularchitect: Poison is weak to (1.6) Ground and Psychic, and resists damage from (0.625) Bug, Fighting, Fairy, Grass and Poison
+[23:34, 02/11/2020] gracefularchitect: Sidenote: 0.391 is ~ 25/64
+[23:34, 02/11/2020] gracefularchitect: given normal resistances is 5/8 = 0.625, greater resistance is 25/64 or the square
+[23:38, 02/11/2020] gracefularchitect: 10) calc then compares resistances again, except this time for attacks vs defense
+[23:38, 02/11/2020] gracefularchitect: A bunch cancel out, such as Fairy, Fighting etc
+[23:39, 02/11/2020] gracefularchitect: Resulting in: Super Effective damage: (1.6) Ground type
+[23:39, 02/11/2020] gracefularchitect: 100% Damage: Bug, Dragon, Electric, Fairy, Fighting, Fire, Flying, Ice, Normal, Rock, Steel, Water
+[23:40, 02/11/2020] gracefularchitect: Not very effective: Dark, Ghost, Grass, Poison, Psychic
+[23:41, 02/11/2020] gracefularchitect: 11) The calculator then goes through each of the defenders found in step 8, and compares their movesets
+[23:42, 02/11/2020] gracefularchitect: Ideally, the calculator wants pokemon that can do super effective (In this example, Ground type) damage
+[23:42, 02/11/2020] gracefularchitect: If it can't, then it will settle for 100% effective damage
+[23:42, 02/11/2020] gracefularchitect: It wants to avoid not very effective damage
+[23:48, 02/11/2020] gracefularchitect: (Q of whether to prioritise charge move/fast move, also whether to cull or add to results)
+[23:48, 02/11/2020] gracefularchitect: In this example i'm going to cull
+[23:54, 02/11/2020] gracefularchitect: Starting with Dark/Poison defenders:
+Alolan Muk: Has only Poison & Dark moves, which are Not very Effective (NVE). This result should be removed.
+Alolan Grimer: Same as above, also not evolved. this result should be removed.
+Skuntank: Has only Poison & Dark fast moves, and Poison, Dark, Fire Charged moves. I.e. has only 1 charge move which is viable.
+Stunky: Same as above, also not evolved. this result should be removed.
+[23:55, 02/11/2020] gracefularchitect: Q of how to rank movesets
+[23:55, 02/11/2020] gracefularchitect: Should algorithm run through movesets grading all movesets
+[23:55, 02/11/2020] gracefularchitect: which for pokemon with many fast or charge moves could be time consuming
+[23:55, 02/11/2020] gracefularchitect: Or should it cull moves from the moveset
+[23:55, 02/11/2020] gracefularchitect: I.e. If it knows Dark is NVE then cull all dark moves
+[23:56, 02/11/2020] gracefularchitect: Then scoring based on combination
+[23:56, 02/11/2020] gracefularchitect: I.e. 0 fast moves * 1 charge move = 0.5/1 point
+[23:57, 02/11/2020] gracefularchitect: 0 fast moves * 0 charge moves = 0 points
+[23:57, 02/11/2020] gracefularchitect: 1 fast move * 1 charge move = 1 or 2 points
+[23:58, 02/11/2020] gracefularchitect: super effective fast move * super effective charge move (SEFM and SECM) = 4 points
+[00:00, 03/11/2020] gracefularchitect: also will need to be a multiplier for Super Effective moves
+[00:02, 03/11/2020] gracefularchitect: For example Fire vs Scizor: 64/25 = 2.56 times effectiveness
+[00:02, 03/11/2020] gracefularchitect: compared to normal 1.6
+[00:03, 03/11/2020] gracefularchitect: Drapion, has access to Ice and Bug fast moves, and Bug and Water Charge moves
+[00:03, 03/11/2020] gracefularchitect: There should also be a multiplier for Same Type Attack Bonus (STAB)
+[00:04, 03/11/2020] gracefularchitect: So Drapion should receive points for Ice/Water, Ice/Bug, Bug/Water, Bug/Bug movesets
+[00:05, 03/11/2020] gracefularchitect: Points for movesets shouldn't be cumulative. I.e. having lots of movesets which are effective shouldn't gain you more points if they are all the same effectiveness
+[00:06, 03/11/2020] gracefularchitect: But Drapion would have a higher point effectiveness if for example it was Bug type with bug moves than if it used it's water and ice moves (1.25 for STAB vs 1 without)
+[00:08, 03/11/2020] gracefularchitect: We repeat for Dark/Rock defenders:
+Tyranitar: Has Rock, Steel & Dark Fast Moves and Rock, Dark & Fire Charge Moves
+[00:09, 03/11/2020] gracefularchitect: Rock Fast Move and Rock Charged Move both get STAB, so Rock/Rock Moveset would be the best
+[00:09, 03/11/2020] gracefularchitect: (possibly 2.5 points? If points were calculated by adding effectiveness)
+[00:11, 03/11/2020] gracefularchitect: (In this case, 0 FM + 0 CM = 0 Points, 1FM + 0CM = 1 Point, 1FM+ 1CM = 2 Points, 1.6 SEFM + 1.6 SECM = 3.2 Points etc)
+[00:13, 03/11/2020] gracefularchitect: Dark/Steel defenders:
+Bisharp: Dark & Steel Fast Moves and Dark, Steel, Bug and Fighting Charge Moves
+[00:13, 03/11/2020] gracefularchitect: Steel/Steel is best, as both get STAB
+[00:16, 03/11/2020] gracefularchitect: Dark/Ground Defenders:
+Ignoring the lower evolutions, Krookodile has Ground & Dark Fast moves, and Ground, Dark and Dragon Charge Moves
+[00:17, 03/11/2020] gracefularchitect: Ground is Super Effective, and also has Same Type Attack Bonus
+[00:19, 03/11/2020] gracefularchitect: So Points would be 1.6 Super Effective multiplied by 1.25 STAB for 2 points per attack. Total would be 4 points
+[00:20, 03/11/2020] gracefularchitect: This calculator would ignore how numerically effective the attacks would be, unless we factor in the dps chart
+[00:23, 03/11/2020] gracefularchitect: Not sure how the gamepress data works when for example only one attack (fast/charged is Super effective)
+[00:23, 03/11/2020] gracefularchitect: 12) Calculator compares point scores per pokemon & moveset, and then generates a list
+[00:24, 03/11/2020] gracefularchitect: Top with Krookodile, with it's Ground/Ground moveset
+[00:24, 03/11/2020] gracefularchitect: Followed by Krookodile with it's Ground/Other types
+[00:24, 03/11/2020] gracefularchitect: followed by the other defenders which can do STAB move types
+[00:24, 03/11/2020] gracefularchitect: followed by Defenders which can do normal damage
+[00:24, 03/11/2020] gracefularchitect: maybe a toggle for showing only Pokemon's best moveset
