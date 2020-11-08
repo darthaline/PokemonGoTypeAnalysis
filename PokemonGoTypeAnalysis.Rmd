@@ -6,7 +6,6 @@ output:
   html_notebook:
     toc: true
 ---
-# Pokemon Go Type Analysis
 
 ## Available data
 
@@ -26,10 +25,12 @@ theurl <- "https://www.kaggle.com/netzuel/pokmon-go-dataset-15-generations"
 statsData <- read.csv(file.path('data', 'pogo.csv'))
 rm(theurl)
 statsData$Secondary[statsData$Secondary == 'None'] <- NA
+statsData$Primary <- tolower(statsData$Primary)
+statsData$Secondary <- tolower(statsData$Secondary)
 statsData
 ```
 
-```{r typeList}
+```{r typeList, eval=FALSE}
 types <- as.character(unique(statsData$Primary))
 types <- tolower(types)
 types <- sort(types)
@@ -98,6 +99,8 @@ chargedMovesData
 
 ## Analysis
 
+### Resistor Types
+
 ```{r pokemonTypes, warning=FALSE, eval=FALSE}
 pokemon <- 'Stunky'
 pokemonTypes <- c(as.character(statsData[statsData$Name == pokemon,]$Primary),
@@ -129,18 +132,19 @@ tempEffectiveness$attacking.defending <- as.character(tempEffectiveness$attackin
 #merging movetypes to make a name in the data frame
 rowtitleProduct <- paste(moveTypes, collapse = ' & ')
 tempEffectiveness <- rbind(tempEffectiveness, c(rowtitleProduct, tempEffectivenessProduct))
+tempEffectiveness
 
 # selecting columns which provide defence against combination of those move types
-tempEffectiveness <- tempEffectiveness[, colnames(tempEffectiveness) == 'attacking.defending' |
+tempEffectivenessResistant <- tempEffectiveness[, colnames(tempEffectiveness) == 'attacking.defending' |
                                          tempEffectiveness[tempEffectiveness$attacking.defending == rowtitleProduct,] < 1]
-tempEffectiveness
+tempEffectivenessResistant
 rm(tempEffectivenessProduct, rowtitleProduct)
 
 ```
 
 ```{r, warning=FALSE}
 #making a copy without the merged double types, after selecting the resisting types
-tempEffectiveness2 <- tempEffectiveness[-dim(tempEffectiveness)[1],]
+tempEffectiveness2 <- tempEffectivenessResistant[-dim(tempEffectivenessResistant)[1],]
 
 #creating logic dataframe checking if each individual type is a resistor
 tempEffectiveness2Logic <- data.frame(tempEffectiveness2 < 1)
@@ -156,7 +160,7 @@ dualTypeResistorsSeconds <- c()
 
 #if all the values in the column in tempEffectiveness2Logic are TRUE,
 #then we can add corresponding type to the list of single type resistors
-for (i in 2:dim(tempEffectiveness)[2]){
+for (i in 2:dim(tempEffectiveness2)[2]){
     if ( all(unlist(tempEffectiveness2Logic[i])) ){
         singleTypeResistors <- c(singleTypeResistors, colnames(tempEffectiveness2Logic)[i])
     }
@@ -182,6 +186,8 @@ colnames(dualTypeResistors) <- c('first', 'second')
 dualTypeResistors$first <- as.character(dualTypeResistors$first)
 dualTypeResistors$second <- as.character(dualTypeResistors$second)
 dualTypeResistors <- dualTypeResistors[dualTypeResistors$first != dualTypeResistors$second,]
+
+rm(tempEffectivenessResistant, tempEffectiveness2, tempEffectiveness2Logic)
 ```
 
 ```{r}
@@ -191,7 +197,40 @@ singleTypeResistors
 dualTypeResistors
 ```
 
+### Resistor pokemon
 
+```{r}
 
+statsDataResistorsSingle <- statsData[1,]
+statsDataResistorsSingle <- statsDataResistorsSingle[-1,]
 
+statsDataMonoType <- statsData[is.na(statsData$Secondary),]
+statsDataDualType <- statsData[!is.na(statsData$Secondary),]
 
+for (i in 1:length(singleTypeResistors)){
+    statsDataResistorsSingle <- rbind( statsDataResistorsSingle,
+                                 statsDataMonoType[grep(singleTypeResistors[i], statsDataMonoType$Primary),] )
+}
+
+rm(statsDataMonoType)
+
+statsDataResistorsSingle
+```
+
+```{r}
+
+statsDataResistorsDual <- statsData[1,]
+statsDataResistorsDual <- statsDataResistorsDual[-1,]
+
+for (i in 1:dim(dualTypeResistors)[1]){
+    statsDataResistorsDual <- rbind( statsDataResistorsDual,
+                                     statsData[grepl(dualTypeResistors[i,]$first, statsData$Primary) &
+                                         grepl(dualTypeResistors[i,]$second, statsData$Secondary),] )
+    statsDataResistorsDual <- rbind( statsDataResistorsDual,
+                                     statsData[grepl(dualTypeResistors[i,]$second, statsData$Primary) &
+                                         grepl(dualTypeResistors[i,]$first, statsData$Secondary),] )
+    
+}
+
+statsDataResistorsDual
+```
