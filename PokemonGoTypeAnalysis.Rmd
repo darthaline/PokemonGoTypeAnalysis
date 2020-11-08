@@ -14,6 +14,7 @@ output:
 theurl <- "https://gamepress.gg/pokemongo/comprehensive-dps-spreadsheet"
 dpsData <- read.csv(file.path('data', 'comprehensive_dps.csv'))
 rm(theurl)
+dpsData
 ```
 
 ## Typing data
@@ -22,9 +23,15 @@ rm(theurl)
 theurl <- "https://www.kaggle.com/netzuel/pokmon-go-dataset-15-generations"
 statsData <- read.csv(file.path('data', 'pogo.csv'))
 rm(theurl)
-
-types <- unique(statsData$Primary)
 statsData$Secondary[statsData$Secondary == 'None'] <- NA
+statsData
+```
+
+```{r typeList}
+types <- as.character(unique(statsData$Primary))
+types <- tolower(types)
+types <- sort(types)
+types
 ```
 
 ```{r typeData, eval=FALSE}
@@ -34,6 +41,7 @@ theurl <- "https://pokemondb.net/pokedex/all"
 source_tables <- read_html(theurl)
 typeData <- html_nodes(source_tables, ".data-table")
 typeData <- html_table(typeData[[1]], fill = TRUE)
+typeData
 
 write.table(typeData, file = file.path('data', 'pokedex.csv'), sep = ',', row.names=FALSE)
 
@@ -47,27 +55,28 @@ rm(theurl)
 
 effectivenessData <- effectivenessData[!names(effectivenessData) %in% c('poison.dark', 'geom.att')]
 effectivenessData <- effectivenessData[-dim(effectivenessData)[2],]
+effectivenessData
 ```
 
-
-```{r warning=FALSE}
+```{r pokemonTypes, warning=FALSE, eval=FALSE}
 pokemon <- 'Stunky'
 pokemonTypes <- c(as.character(statsData[statsData$Name == pokemon,]$Primary),
                as.character(statsData[statsData$Name == pokemon,]$Secondary))
 pokemonTypes <- pokemonTypes[!is.na(pokemonTypes)]
 pokemonTypes <- tolower(pokemonTypes)
+pokemonTypes <- sort(pokemonTypes)
+pokemonTypes
+```
 
-# for (i in 1:length(moveTypes)){
-#     tempEffectiveness <- effectivenessData[effectivenessData$attacking.defending == moveTypes[i],]
-#     resistedBy <- tempEffectiveness[,is.na(tempEffectiveness < 1) | (tempEffectiveness < 1)]
-#     print(resistedBy)
-#     effectiveAgainst <- tempEffectiveness[,is.na(tempEffectiveness > 1) | (tempEffectiveness > 1)]
-#     print(effectiveAgainst)
-# }
+```{r moveTypeInputs}
+#input 2 movetypes, sort alphabetically
+moveTypes <- c('poison', 'dark')
+moveTypes <- c('ghost', 'psychic')
+moveTypes <- sort(moveTypes)
+moveTypes
+```
 
-#input 2 movetypes
-moveTypes <- c('dark', 'poison')  #figting is just for example here
-
+```{r, warning=FALSE}
 #selecting moveTypes
 tempEffectiveness <- effectivenessData[effectivenessData$attacking.defending %in% moveTypes,]
 
@@ -78,12 +87,61 @@ tempEffectivenessProduct <- unlist(lapply(tempEffectiveness[!names(tempEffective
 tempEffectiveness$attacking.defending <- as.character(tempEffectiveness$attacking.defending)
 
 #merging movetypes to make a name in the data frame
-rowtitleProduct <- paste(moveTypes, collapse = '&')
+rowtitleProduct <- paste(moveTypes, collapse = ' & ')
 tempEffectiveness <- rbind(tempEffectiveness, c(rowtitleProduct, tempEffectivenessProduct))
 
 # selecting columns which provide defence against combination of those move types
 tempEffectiveness <- tempEffectiveness[, colnames(tempEffectiveness) == 'attacking.defending' |
                                          tempEffectiveness[tempEffectiveness$attacking.defending == rowtitleProduct,] < 1]
-
+tempEffectiveness
+rm(tempEffectivenessProduct, rowtitleProduct)
 
 ```
+
+```{r, warning=FALSE}
+#making a copy without the merged double types, after selecting the resisting types
+tempEffectiveness2 <- tempEffectiveness[-dim(tempEffectiveness)[1],]
+
+#creating logic dataframe checking if each individual type is a resistor
+tempEffectiveness2Logic <- data.frame(tempEffectiveness2 < 1)
+tempEffectiveness2Logic$attacking.defending <- tempEffectiveness2$attacking.defending
+tempEffectiveness2Logic
+
+#making a list of single type resistors
+singleTypeResistors <- c()
+
+#making lists of dual type resistors
+dualTypeResistorsFirsts <- c()
+dualTypeResistorsSeconds <- c()
+
+#if all the values in the column in tempEffectiveness2Logic are TRUE,
+#then we can add corresponding type to the list of single type resistors
+for (i in 2:dim(tempEffectiveness)[2]){
+    if ( all(unlist(tempEffectiveness2Logic[i])) ){
+        singleTypeResistors <- c(singleTypeResistors, colnames(tempEffectiveness2Logic)[i])
+    } else {
+        if (tempEffectiveness2Logic[1,i]) {
+            dualTypeResistorsFirsts <- c(dualTypeResistorsFirsts, colnames(tempEffectiveness2Logic)[i])
+        } else {
+            dualTypeResistorsSeconds<- c(dualTypeResistorsSeconds, colnames(tempEffectiveness2Logic)[i])
+        }
+        
+    }
+}
+
+dualTypeResistors <- expand.grid(dualTypeResistorsFirsts, dualTypeResistorsSeconds)
+```
+
+```{r}
+singleTypeResistors
+```
+```{r}
+dualTypeResistors
+```
+
+
+
+
+
+
+
