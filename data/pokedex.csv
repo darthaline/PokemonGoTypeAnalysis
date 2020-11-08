@@ -1,4 +1,4 @@
-"#","Name","Type","Total","HP","Attack","Defense","Sp. Atk","Sp. Def","Speed"
+"PokedexNumber","Name","Type","Total","HP","Attack","Defense","Sp. Atk","Sp. Def","Speed"
 1,"Bulbasaur","grasspoison",318,45,49,49,65,65,45
 2,"Ivysaur","grasspoison",405,60,62,63,80,80,60
 3,"Venusaur","grasspoison",525,80,82,83,100,100,80

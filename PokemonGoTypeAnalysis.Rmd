@@ -45,6 +45,7 @@ source_tables <- read_html(theurl)
 typeData <- html_nodes(source_tables, ".data-table")
 typeData <- html_table(typeData[[1]], fill = TRUE)
 typeData$Type <- tolower(typeData$Type)
+colnames(typeData)[1] <- 'PokedexNumber'
 
 write.table(typeData, file = file.path('data', 'pokedex.csv'), sep = ',', row.names=FALSE)
 
@@ -169,135 +170,43 @@ chargedMovesData
 
 ```{r moveTypeInputs}
 #input 2 movetypes, sort alphabetically
-moveTypes <- c('poison', 'dark')
+moveTypes <- c('dark', 'flying')
+#moveTypes <- c('poison', 'dark')
 #moveTypes <- c('ghost', 'psychic')
 moveTypes <- sort(moveTypes)
 moveTypes
 ```
 
 ```{r}
-defendingRow <- fullDefendingTable[fullDefendingTable$primary == moveTypes[1] &
-                                       fullDefendingTable$secondary == moveTypes[2] &
-                                       !is.na(fullDefendingTable$secondary),]
-defendingRow <- rbind(defendingRow,
-                      fullDefendingTable[fullDefendingTable$primary == moveTypes[2] &
-                                             fullDefendingTable$secondary == moveTypes[1] &
-                                             !is.na(fullDefendingTable$secondary),])
-defendingRow
-```
+attackerTypes <- fullDefendingTable[,c('primary', 'secondary', moveTypes[1],moveTypes[2])]
+attackerTypes
 
-
-```{r, warning=FALSE}
-#selecting moveTypes
-tempEffectiveness <- effectivenessData[effectivenessData$attacking.defending %in% moveTypes,]
-
-# calculating the product of the two movetypes
-tempEffectivenessProduct <- unlist(lapply(tempEffectiveness[!names(tempEffectiveness) %in% c('attacking.defending')], prod))
-
-# removing factoring
-tempEffectiveness$attacking.defending <- as.character(tempEffectiveness$attacking.defending)
-
-#merging movetypes to make a name in the data frame
-rowtitleProduct <- paste(moveTypes, collapse = ' & ')
-tempEffectiveness <- rbind(tempEffectiveness, c(rowtitleProduct, tempEffectivenessProduct))
-tempEffectiveness
 ```
 
 ```{r}
-# selecting columns which provide defence against combination of those move types
-tempEffectivenessResistant <- tempEffectiveness[, colnames(tempEffectiveness) == 'attacking.defending' |
-                                         tempEffectiveness[tempEffectiveness$attacking.defending == rowtitleProduct,] < 1]
-tempEffectivenessResistant
-rm(tempEffectivenessProduct, rowtitleProduct)
-```
-
-
-```{r, warning=FALSE}
-#making a copy without the merged double types, after selecting the resisting types
-tempEffectiveness2 <- tempEffectivenessResistant[-dim(tempEffectivenessResistant)[1],]
-
-#creating logic dataframe checking if each individual type is a resistor
-tempEffectiveness2Logic <- data.frame(tempEffectiveness2 < 1)
-tempEffectiveness2Logic$attacking.defending <- tempEffectiveness2$attacking.defending
-tempEffectiveness2Logic
-
-#making a list of single type resistors
-singleTypeResistors <- c()
-
-#making lists of dual type resistors
-dualTypeResistorsFirsts <- c()
-dualTypeResistorsSeconds <- c()
-
-#if all the values in the column in tempEffectiveness2Logic are TRUE,
-#then we can add corresponding type to the list of single type resistors
-for (i in 2:dim(tempEffectiveness2)[2]){
-    if ( all(unlist(tempEffectiveness2Logic[i])) ){
-        singleTypeResistors <- c(singleTypeResistors, colnames(tempEffectiveness2Logic)[i])
-    }
-    
-    if (tempEffectiveness2Logic[1,i]) {
-        dualTypeResistorsFirsts <- c(dualTypeResistorsFirsts, colnames(tempEffectiveness2Logic)[i])
-    } else {
-        dualTypeResistorsSeconds<- c(dualTypeResistorsSeconds, colnames(tempEffectiveness2Logic)[i])
-    }
-    
-    if (tempEffectiveness2Logic[2,i]) {
-        dualTypeResistorsSeconds<- c(dualTypeResistorsSeconds, colnames(tempEffectiveness2Logic)[i])
-    } else {
-        dualTypeResistorsFirsts <- c(dualTypeResistorsFirsts, colnames(tempEffectiveness2Logic)[i])
-    }
-}
-
-dualTypeResistorsFirsts <- unique(dualTypeResistorsFirsts)
-dualTypeResistorsSeconds <- unique(dualTypeResistorsSeconds)
-
-dualTypeResistors <- expand.grid(dualTypeResistorsFirsts, dualTypeResistorsSeconds)
-colnames(dualTypeResistors) <- c('first', 'second')
-dualTypeResistors$first <- as.character(dualTypeResistors$first)
-dualTypeResistors$second <- as.character(dualTypeResistors$second)
-dualTypeResistors <- dualTypeResistors[dualTypeResistors$first != dualTypeResistors$second,]
-
-rm(tempEffectivenessResistant, tempEffectiveness2, tempEffectiveness2Logic)
-```
-
-```{r}
-singleTypeResistors
-```
-```{r}
-dualTypeResistors
+chosenResisters <- attackerTypes[ attackerTypes[,moveTypes[1]] < 1 & attackerTypes[,moveTypes[2]] < 1, ]
+chosenResisters
 ```
 
 ### Resistor pokemon
 
 ```{r}
-
 statsDataResistors <- typeData[1,]
 statsDataResistors <- statsDataResistors[-1,]
 
-# for (i in 1:length(singleTypeResistors)){
-#     statsDataResistors <- rbind( statsDataResistors,
-#                                  typeData[typeData$Type == singleTypeResistors[i],] )
-# }
-
-for (i in 1:length(singleTypeResistors)){
-    statsDataResistors <- rbind( statsDataResistors,
-                                 typeData[grep(singleTypeResistors[i], typeData$Type),] )
+for (i in 1:dim(chosenResisters)[1]){
+    
+    if (is.na(chosenResisters$secondary[i])){
+        statsDataResistors <- rbind( statsDataResistors,
+                                     typeData[typeData$Type == chosenResisters$primary[i],] )
+    } else {
+        statsDataResistors <- rbind( statsDataResistors,
+                                 typeData[grepl(chosenResisters$primary[i], typeData$Type) &
+                                          grepl(chosenResisters$secondary[i], typeData$Type),] )
+    }
+    
 }
 
-statsDataResistors
-```
-
-```{r}
-
-statsDataResistors <- typeData[1,]
-statsDataResistors <- statsDataResistors[-1,]
-
-for (i in 1:dim(dualTypeResistors)[1]){
-    statsDataResistors <- rbind( statsDataResistors,
-                                 typeData[grepl(dualTypeResistors$first[i], typeData$Type) &
-                                              grepl(dualTypeResistors$second[i], typeData$Type),] )
-}
-
-statsDataResistors
+statsDataResistors[statsDataResistors$PokedexNumber < 650,]
 ```
 
