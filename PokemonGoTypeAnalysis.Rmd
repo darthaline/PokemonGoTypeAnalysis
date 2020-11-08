@@ -20,7 +20,7 @@ dpsData
 
 ### Typing data
 
-```{r StatsData}
+```{r StatsData, eval=FALSE}
 theurl <- "https://www.kaggle.com/netzuel/pokmon-go-dataset-15-generations"
 statsData <- read.csv(file.path('data', 'pogo.csv'))
 rm(theurl)
@@ -37,14 +37,14 @@ types <- sort(types)
 types
 ```
 
-```{r typeData, eval=FALSE}
+```{r typeData}
 library(rvest)
 
 theurl <- "https://pokemondb.net/pokedex/all"
 source_tables <- read_html(theurl)
 typeData <- html_nodes(source_tables, ".data-table")
 typeData <- html_table(typeData[[1]], fill = TRUE)
-typeData
+typeData$Type <- tolower(typeData$Type)
 
 write.table(typeData, file = file.path('data', 'pokedex.csv'), sep = ',', row.names=FALSE)
 
@@ -62,6 +62,72 @@ effectivenessData <- effectivenessData[!names(effectivenessData) %in% c('poison.
 effectivenessData <- effectivenessData[-dim(effectivenessData)[2],]
 effectivenessData
 ```
+
+```{r}
+effectivenessDataTransposed <- t(effectivenessData)
+colnames(effectivenessDataTransposed) <- effectivenessDataTransposed[1,]
+rownames(effectivenessDataTransposed) <- c('defending.attacking', as.character(effectivenessData$attacking.defending))
+effectivenessDataTransposed <- effectivenessDataTransposed[rownames(effectivenessDataTransposed) !='defending.attacking',]
+effectivenessDataTransposed <- data.frame(effectivenessDataTransposed,
+                                          stringsAsFactors = FALSE) #defending\attacking order
+effectivenessDataTransposed
+```
+
+```{r}
+types <-c("bug","dark","dragon","electric",
+          "fairy","fighting","fire","flying",
+          "ghost","grass","ground","ice",
+          "normal","poison","psychic","rock",
+          "steel","water")
+```
+
+```{r}
+library(utils)
+dualTypeDefenders <- combn(types, 2)
+dualTypeDefenders <- t(dualTypeDefenders)
+dualTypeDefenders <- data.frame(dualTypeDefenders)
+colnames(dualTypeDefenders) <- c('first', 'second')
+dualTypeDefenders$first <- as.character(dualTypeDefenders$first)
+dualTypeDefenders$second <- as.character(dualTypeDefenders$second)
+```
+
+```{r}
+fullDefendingTable <- data.frame(primary = rownames(effectivenessDataTransposed),
+                                 secondary = NA,
+                                 effectivenessDataTransposed,
+                                 stringsAsFactors = FALSE)
+fullDefendingTableColnames <- colnames(fullDefendingTable)
+
+for (i in 1:dim(dualTypeDefenders)[1]){
+    if(dualTypeDefenders$first[i] == dualTypeDefenders$second[i]) {
+        
+        cleanRow <- as.character(unname(unlist( effectivenessDataTransposed[rownames(effectivenessDataTransposed) == dualTypeDefenders$first[i],] )))
+        
+        fullDefendingTable <- rbind(fullDefendingTable,
+                                    c(dualTypeDefenders$first[i],
+                                      NA,
+                                      cleanRow),
+                                    stringsAsFactors = FALSE)
+    } else {
+        multiplied <- as.numeric(unlist(effectivenessDataTransposed[rownames(effectivenessDataTransposed) == dualTypeDefenders$first[i],])) *
+                      as.numeric(unlist(effectivenessDataTransposed[rownames(effectivenessDataTransposed) == dualTypeDefenders$second[i],]))
+        
+        fullDefendingTable <- rbind(fullDefendingTable,
+                                    c(dualTypeDefenders$first[i],
+                                      dualTypeDefenders$second[i],
+                                      multiplied),
+                                    stringsAsFactors = FALSE)
+    }
+}
+
+colnames(fullDefendingTable) <- fullDefendingTableColnames
+
+rm(dualTypeDefenders, multiplied, effectivenessDataTransposed, types, i)
+
+rownames(fullDefendingTable) <- c()
+fullDefendingTable
+```
+
 
 ### Moves Data
 
@@ -101,23 +167,25 @@ chargedMovesData
 
 ### Resistor Types
 
-```{r pokemonTypes, warning=FALSE, eval=FALSE}
-pokemon <- 'Stunky'
-pokemonTypes <- c(as.character(statsData[statsData$Name == pokemon,]$Primary),
-               as.character(statsData[statsData$Name == pokemon,]$Secondary))
-pokemonTypes <- pokemonTypes[!is.na(pokemonTypes)]
-pokemonTypes <- tolower(pokemonTypes)
-pokemonTypes <- sort(pokemonTypes)
-pokemonTypes
-```
-
 ```{r moveTypeInputs}
 #input 2 movetypes, sort alphabetically
 moveTypes <- c('poison', 'dark')
-moveTypes <- c('ghost', 'psychic')
+#moveTypes <- c('ghost', 'psychic')
 moveTypes <- sort(moveTypes)
 moveTypes
 ```
+
+```{r}
+defendingRow <- fullDefendingTable[fullDefendingTable$primary == moveTypes[1] &
+                                       fullDefendingTable$secondary == moveTypes[2] &
+                                       !is.na(fullDefendingTable$secondary),]
+defendingRow <- rbind(defendingRow,
+                      fullDefendingTable[fullDefendingTable$primary == moveTypes[2] &
+                                             fullDefendingTable$secondary == moveTypes[1] &
+                                             !is.na(fullDefendingTable$secondary),])
+defendingRow
+```
+
 
 ```{r, warning=FALSE}
 #selecting moveTypes
@@ -133,14 +201,16 @@ tempEffectiveness$attacking.defending <- as.character(tempEffectiveness$attackin
 rowtitleProduct <- paste(moveTypes, collapse = ' & ')
 tempEffectiveness <- rbind(tempEffectiveness, c(rowtitleProduct, tempEffectivenessProduct))
 tempEffectiveness
+```
 
+```{r}
 # selecting columns which provide defence against combination of those move types
 tempEffectivenessResistant <- tempEffectiveness[, colnames(tempEffectiveness) == 'attacking.defending' |
                                          tempEffectiveness[tempEffectiveness$attacking.defending == rowtitleProduct,] < 1]
 tempEffectivenessResistant
 rm(tempEffectivenessProduct, rowtitleProduct)
-
 ```
+
 
 ```{r, warning=FALSE}
 #making a copy without the merged double types, after selecting the resisting types
@@ -201,36 +271,33 @@ dualTypeResistors
 
 ```{r}
 
-statsDataResistorsSingle <- statsData[1,]
-statsDataResistorsSingle <- statsDataResistorsSingle[-1,]
+statsDataResistors <- typeData[1,]
+statsDataResistors <- statsDataResistors[-1,]
 
-statsDataMonoType <- statsData[is.na(statsData$Secondary),]
-statsDataDualType <- statsData[!is.na(statsData$Secondary),]
+# for (i in 1:length(singleTypeResistors)){
+#     statsDataResistors <- rbind( statsDataResistors,
+#                                  typeData[typeData$Type == singleTypeResistors[i],] )
+# }
 
 for (i in 1:length(singleTypeResistors)){
-    statsDataResistorsSingle <- rbind( statsDataResistorsSingle,
-                                 statsDataMonoType[grep(singleTypeResistors[i], statsDataMonoType$Primary),] )
+    statsDataResistors <- rbind( statsDataResistors,
+                                 typeData[grep(singleTypeResistors[i], typeData$Type),] )
 }
 
-rm(statsDataMonoType)
-
-statsDataResistorsSingle
+statsDataResistors
 ```
 
 ```{r}
 
-statsDataResistorsDual <- statsData[1,]
-statsDataResistorsDual <- statsDataResistorsDual[-1,]
+statsDataResistors <- typeData[1,]
+statsDataResistors <- statsDataResistors[-1,]
 
 for (i in 1:dim(dualTypeResistors)[1]){
-    statsDataResistorsDual <- rbind( statsDataResistorsDual,
-                                     statsData[grepl(dualTypeResistors[i,]$first, statsData$Primary) &
-                                         grepl(dualTypeResistors[i,]$second, statsData$Secondary),] )
-    statsDataResistorsDual <- rbind( statsDataResistorsDual,
-                                     statsData[grepl(dualTypeResistors[i,]$second, statsData$Primary) &
-                                         grepl(dualTypeResistors[i,]$first, statsData$Secondary),] )
-    
+    statsDataResistors <- rbind( statsDataResistors,
+                                 typeData[grepl(dualTypeResistors$first[i], typeData$Type) &
+                                              grepl(dualTypeResistors$second[i], typeData$Type),] )
 }
 
-statsDataResistorsDual
+statsDataResistors
 ```
+
