@@ -1,0 +1,156 @@
+"Type","Move","Damage","DPS"
+"normal","Wrap",60,20.7
+"normal","Hyper Beam",150,39.5
+"dark","Dark Pulse",80,26.7
+"poison","Sludge",50,23.8
+"normal","Vise Grip",35,18.4
+"fire","Flame Wheel",60,22.2
+"bug","Megahorn",110,50
+"fire","Flamethrower",70,31.8
+"ground","Dig",100,21.3
+"fighting","Cross Chop",50,33.3
+"psychic","Psybeam",70,21.9
+"ground","Earthquake",140,38.9
+"rock","Stone Edge",100,43.5
+"ice","Ice Punch",50,26.3
+"electric","Discharge",65,26
+"steel","Flash Cannon",100,37
+"flying","Drill Peck",65,28.3
+"ice","Ice Beam",90,27.3
+"ice","Blizzard",130,41.9
+"fire","Heat Wave",95,31.7
+"flying","Aerial Ace",55,22.9
+"ground","Drill Run",80,28.6
+"grass","Petal Blizzard",110,42.3
+"bug","Bug Buzz",90,24.3
+"poison","Poison Fang",35,20.6
+"dark","Night Slash",50,22.7
+"water","Bubble Beam",45,23.7
+"fighting","Submission",60,27.3
+"fighting","Low Sweep",40,21.1
+"water","Aqua Jet",45,17.3
+"water","Aqua Tail",50,26.3
+"grass","Seed Bomb",55,26.2
+"psychic","Psyshock",65,24.1
+"rock","Ancient Power",70,20
+"rock","Rock Tomb",70,21.9
+"rock","Rock Slide",80,29.6
+"rock","Power Gem",80,27.6
+"ghost","Shadow Sneak",50,17.2
+"ghost","Shadow Punch",40,23.5
+"ghost","Ominous Wind",50,21.7
+"ghost","Shadow Ball",100,33.3
+"steel","Magnet Bomb",70,25
+"steel","Iron Head",60,31.6
+"electric","Thunder Punch",45,25
+"electric","Thunder",100,41.7
+"electric","Thunderbolt",80,32
+"dragon","Twister",45,16.1
+"dragon","Dragon Pulse",90,25
+"dragon","Dragon Claw",50,29.4
+"fairy","Disarming Voice",70,17.9
+"fairy","Draining Kiss",60,23.1
+"fairy","Dazzling Gleam",100,28.6
+"fairy","Moonblast",130,33.3
+"fairy","Play Rough",90,31
+"poison","Cross Poison",40,26.7
+"poison","Sludge Bomb",80,34.8
+"poison","Sludge Wave",110,34.4
+"poison","Gunk Shot",130,41.9
+"ground","Bone Club",40,25
+"ground","Bulldoze",80,22.9
+"ground","Mud Bomb",55,23.9
+"bug","Signal Beam",75,25.9
+"bug","X-Scissor",45,28.1
+"fire","Flame Charge",70,18.4
+"fire","Flame Burst",70,26.9
+"fire","Fire Blast",140,33.3
+"water","Brine",60,26.1
+"water","Water Pulse",70,21.9
+"water","Scald",80,21.6
+"water","Hydro Pump",130,39.4
+"psychic","Psychic",90,32.1
+"ice","Icy Wind",60,18.2
+"fire","Fire Punch",55,25
+"grass","Solar Beam",180,36.7
+"grass","Leaf Blade",70,29.2
+"grass","Power Whip",90,34.6
+"flying","Air Cutter",60,22.2
+"flying","Hurricane",110,40.7
+"fighting","Brick Break",40,25
+"normal","Swift",60,21.4
+"normal","Horn Attack",40,21.6
+"normal","Stomp",55,32.4
+"normal","Hyper Fang",80,32
+"normal","Body Slam",50,26.3
+"normal","Struggle",35,15.9
+"normal","Transform",0,0
+"fighting","Close Combat",100,43.5
+"fighting","Dynamic Punch",90,33.3
+"fighting","Focus Blast",140,40
+"ice","Aurora Beam",80,22.5
+"electric","Wild Charge",90,34.6
+"electric","Zap Cannon",140,37.8
+"ice","Avalanche",90,33.3
+"flying","Brave Bird",130,65
+"flying","Sky Attack",80,40
+"ground","Sand Tomb",60,15
+"rock","Rock Blast",50,23.8
+"bug","Silver Wind",70,18.9
+"ghost","Night Shade",60,23.1
+"steel","Gyro Ball",80,24.2
+"steel","Heavy Slam",70,33.3
+"fire","Overheat",160,40
+"grass","Grass Knot",90,34.6
+"grass","Energy Ball",90,23.1
+"psychic","Future Sight",120,44.4
+"psychic","Mirror Coat",60,23.1
+"dragon","Outrage",110,28.2
+"dark","Crunch",70,21.9
+"dark","Foul Play",70,35
+"water","Surf",65,38.2
+"dragon","Draco Meteor",150,41.7
+"steel","Doom Desire",70,41.2
+"psychic","Psycho Boost",70,17.5
+"water","Origin Pulse",130,76.5
+"ground","Precipice Blades",130,76.5
+"fire","Weather Ball",60,37.5
+"ice","Weather Ball",60,37.5
+"normal","Weather Ball",60,37.5
+"water","Weather Ball",60,37.5
+"grass","Frenzy Plant",100,38.5
+"fire","Blast Burn",110,33.3
+"water","Hydro Cannon",90,47.4
+"normal","Last Resort",90,31
+"steel","Meteor Mash",100,38.5
+"normal","Skull Bash",130,41.9
+"poison","Acid Spray",20,6.7
+"ground","Earth Power",100,27.8
+"water","Crabhammer",85,44.7
+"bug","Lunge",55,19
+"normal","Crush Claw",0,0
+"water","Octazooka",50,21.7
+"steel","Mirror Shot",50,20.8
+"fighting","Superpower",85,28.3
+"bug","Fell Stinger",50,22.7
+"grass","Leaf Tornado",45,14.5
+"bug","Leech Life",0,0
+"fighting","Drain Punch",0,0
+"ghost","Shadow Bone",80,28.6
+"water","Muddy Water",50,22.7
+"fire","Blaze Kick",45,37.5
+"water","Razor Shell",0,0
+"fighting","Power-Up Punch",50,25
+"normal","Giga Impact",200,42.6
+"normal","Frustration",10,5
+"normal","Return",35,50
+"psychic","Synchronoise",80,30.8
+"normal","Horn Drill",0,0
+"ground","Fissure",0,0
+"fighting","Sacred Sword",55,45.8
+"fighting","Flying Press",110,47.8
+"fighting","Aura Sphere",90,50
+"rock","Rock Wrecker",110,30.6
+"flying","Fly",80,44.4
+"fire","V-create",95,33.9
+"normal","Tri Attack",75,30

@@ -8,7 +8,9 @@ output:
 ---
 # Pokemon Go Type Analysis
 
-## DPS data lvl 40
+## Available data
+
+### DPS data lvl 40
 
 ```{r DPSData}
 theurl <- "https://gamepress.gg/pokemongo/comprehensive-dps-spreadsheet"
@@ -17,7 +19,7 @@ rm(theurl)
 dpsData
 ```
 
-## Typing data
+### Typing data
 
 ```{r StatsData}
 theurl <- "https://www.kaggle.com/netzuel/pokmon-go-dataset-15-generations"
@@ -48,6 +50,8 @@ write.table(typeData, file = file.path('data', 'pokedex.csv'), sep = ',', row.na
 rm(theurl, source_tables)
 ```
 
+### Effectiveness data
+
 ```{r effectivenessData}
 theurl <- "https://docs.google.com/spreadsheets/d/1dlXr-i300HAWEekKQltdJQsll7keoKhsjuRDKft2F0U/edit?usp=sharing"
 effectivenessData <- read.csv(file.path('data', 'pokemon go type effectiveness chart.csv'), skip = 4)
@@ -57,6 +61,42 @@ effectivenessData <- effectivenessData[!names(effectivenessData) %in% c('poison.
 effectivenessData <- effectivenessData[-dim(effectivenessData)[2],]
 effectivenessData
 ```
+
+### Moves Data
+
+```{r movesData}
+library(rvest)
+
+theurl <- "https://pokemon.gameinfo.io/en/moves"
+source_tables <- read_html(theurl)
+movesData <- html_nodes(source_tables, ".sortable")
+movesDataIcon <- html_nodes(source_tables, ".move-icon")
+movesDataIcon <- html_attr(movesDataIcon, 'data-type')
+movesDataIcon <- tolower(movesDataIcon)
+
+fastMovesData  <- html_table(movesData[[1]], fill = TRUE)
+colnames(fastMovesData) <- c('Type', colnames(fastMovesData)[2:4])
+chargedMovesData  <- html_table(movesData[[2]], fill = TRUE)
+colnames(chargedMovesData) <- c('Type', colnames(chargedMovesData)[2:4])
+
+fastMovesData$Type <- movesDataIcon[ 1:dim(fastMovesData)[1] ]
+chargedMovesData$Type <- movesDataIcon[ (dim(fastMovesData)[1]+1): (dim(fastMovesData)[1]+dim(chargedMovesData)[1])]
+
+write.table(fastMovesData, file = file.path('data', 'fastMovesData.csv'), sep = ',', row.names=FALSE)
+write.table(chargedMovesData, file = file.path('data', 'chargedMovesData.csv'), sep = ',', row.names=FALSE)
+
+rm(theurl, source_tables, movesData, movesDataIcon)
+```
+
+```{r fastMovesData}
+fastMovesData
+```
+
+```{r chargedMovesData}
+chargedMovesData
+```
+
+## Analysis
 
 ```{r pokemonTypes, warning=FALSE, eval=FALSE}
 pokemon <- 'Stunky'
@@ -119,17 +159,29 @@ dualTypeResistorsSeconds <- c()
 for (i in 2:dim(tempEffectiveness)[2]){
     if ( all(unlist(tempEffectiveness2Logic[i])) ){
         singleTypeResistors <- c(singleTypeResistors, colnames(tempEffectiveness2Logic)[i])
+    }
+    
+    if (tempEffectiveness2Logic[1,i]) {
+        dualTypeResistorsFirsts <- c(dualTypeResistorsFirsts, colnames(tempEffectiveness2Logic)[i])
     } else {
-        if (tempEffectiveness2Logic[1,i]) {
-            dualTypeResistorsFirsts <- c(dualTypeResistorsFirsts, colnames(tempEffectiveness2Logic)[i])
-        } else {
-            dualTypeResistorsSeconds<- c(dualTypeResistorsSeconds, colnames(tempEffectiveness2Logic)[i])
-        }
-        
+        dualTypeResistorsSeconds<- c(dualTypeResistorsSeconds, colnames(tempEffectiveness2Logic)[i])
+    }
+    
+    if (tempEffectiveness2Logic[2,i]) {
+        dualTypeResistorsSeconds<- c(dualTypeResistorsSeconds, colnames(tempEffectiveness2Logic)[i])
+    } else {
+        dualTypeResistorsFirsts <- c(dualTypeResistorsFirsts, colnames(tempEffectiveness2Logic)[i])
     }
 }
 
+dualTypeResistorsFirsts <- unique(dualTypeResistorsFirsts)
+dualTypeResistorsSeconds <- unique(dualTypeResistorsSeconds)
+
 dualTypeResistors <- expand.grid(dualTypeResistorsFirsts, dualTypeResistorsSeconds)
+colnames(dualTypeResistors) <- c('first', 'second')
+dualTypeResistors$first <- as.character(dualTypeResistors$first)
+dualTypeResistors$second <- as.character(dualTypeResistors$second)
+dualTypeResistors <- dualTypeResistors[dualTypeResistors$first != dualTypeResistors$second,]
 ```
 
 ```{r}
@@ -138,8 +190,6 @@ singleTypeResistors
 ```{r}
 dualTypeResistors
 ```
-
-
 
 
 
