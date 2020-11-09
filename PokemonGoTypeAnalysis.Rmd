@@ -20,7 +20,7 @@ dpsData
 
 ### Typing data
 
-```{r StatsData, eval=FALSE}
+```{r StatsData eval=FALSE}
 theurl <- "https://www.kaggle.com/netzuel/pokmon-go-dataset-15-generations"
 statsData <- read.csv(file.path('data', 'pogo.csv'))
 rm(theurl)
@@ -30,7 +30,7 @@ statsData$Secondary <- tolower(statsData$Secondary)
 statsData
 ```
 
-```{r typeList, eval=FALSE}
+```{r typeList eval=FALSE}
 types <- as.character(unique(statsData$Primary))
 types <- tolower(types)
 types <- sort(types)
@@ -123,7 +123,7 @@ for (i in 1:dim(dualTypeDefenders)[1]){
 
 colnames(fullDefendingTable) <- fullDefendingTableColnames
 
-rm(dualTypeDefenders, multiplied, effectivenessDataTransposed, types, i)
+rm(dualTypeDefenders, multiplied, effectivenessDataTransposed, i)
 
 rownames(fullDefendingTable) <- c()
 fullDefendingTable
@@ -168,9 +168,15 @@ chargedMovesData
 
 ### Resistor Types
 
+```{r pokemonInput}
+inputPokemon <- 'Golbat'
+```
+
+
+
 ```{r moveTypeInputs}
 #input 2 movetypes, sort alphabetically
-moveTypes <- c('dark', 'flying')
+moveTypes <- c('dragon', 'psychic')
 #moveTypes <- c('poison', 'dark')
 #moveTypes <- c('ghost', 'psychic')
 moveTypes <- sort(moveTypes)
@@ -208,5 +214,49 @@ for (i in 1:dim(chosenResisters)[1]){
 }
 
 statsDataResistors[statsDataResistors$PokedexNumber < 650,]
+```
+
+### Attacker Pokemon
+
+```{r FindAttackerPokeType}
+
+attackerPokeTypes = c()
+
+for (i in 1:length(types)){
+  
+  if(grepl(types[i],typeData[typeData$Name==inputPokemon,]$Type)){
+    attackerPokeTypes = c(attackerPokeTypes,types[i])
+  }
+  
+}
+
+attackerPokeTypes
+
+```
+```{r FindAttackerPokeResists}
+
+if(length(attackerPokeTypes) == 1){
+  attackerPokeStats <- fullDefendingTable[fullDefendingTable$primary == attackerPokeTypes[1] &
+                                      is.na(fullDefendingTable$secondary),]
+  
+} else {
+  attackerPokeStats <- fullDefendingTable[fullDefendingTable$primary == attackerPokeTypes[1] &
+                                      fullDefendingTable$secondary == attackerPokeTypes[2] &
+                                        !is.na(fullDefendingTable$secondary),]
+}
+attackerPokeStats
+
+```
+
+```{r}
+attackerPokeWeaknesses <- attackerPokeStats[ , colnames(attackerPokeStats) %in% c('primary', 'secondary') |
+                                               attackerPokeStats > 1]
+
+attackerPokeResists <- attackerPokeStats[ , colnames(attackerPokeStats) %in% c('primary', 'secondary') |
+                                               attackerPokeStats < 1]
+attackerPokeWeaknesses
+attackerPokeResists
+
+
 ```
 
