@@ -20,7 +20,7 @@ dpsData
 
 ### Typing data
 
-```{r StatsData eval=FALSE}
+```{r StatsData, eval=FALSE}
 theurl <- "https://www.kaggle.com/netzuel/pokmon-go-dataset-15-generations"
 statsData <- read.csv(file.path('data', 'pogo.csv'))
 rm(theurl)
@@ -30,7 +30,7 @@ statsData$Secondary <- tolower(statsData$Secondary)
 statsData
 ```
 
-```{r typeList eval=FALSE}
+```{r typeList, eval=FALSE}
 types <- as.character(unique(statsData$Primary))
 types <- tolower(types)
 types <- sort(types)
@@ -168,12 +168,6 @@ chargedMovesData
 
 ### Resistor Types
 
-```{r pokemonInput}
-inputPokemon <- 'Golbat'
-```
-
-
-
 ```{r moveTypeInputs}
 #input 2 movetypes, sort alphabetically
 moveTypes <- c('dragon', 'psychic')
@@ -218,6 +212,10 @@ statsDataResistors[statsDataResistors$PokedexNumber < 650,]
 
 ### Attacker Pokemon
 
+```{r pokemonInput}
+inputPokemon <- 'Golbat'
+```
+
 ```{r FindAttackerPokeType}
 
 attackerPokeTypes = c()
@@ -248,15 +246,48 @@ attackerPokeStats
 
 ```
 
-```{r}
+```{r attackerPokeWeaknesses}
 attackerPokeWeaknesses <- attackerPokeStats[ , colnames(attackerPokeStats) %in% c('primary', 'secondary') |
                                                attackerPokeStats > 1]
+attackerPokeWeaknesses
+```
 
+```{r attackerPokeResists}
 attackerPokeResists <- attackerPokeStats[ , colnames(attackerPokeStats) %in% c('primary', 'secondary') |
                                                attackerPokeStats < 1]
-attackerPokeWeaknesses
 attackerPokeResists
+```
 
+```{r CollateDpsMoveDataAndTypes, warning=FALSE, message=FALSE}
 
+# making the data frame for the extra data
+extraDataTemp <- data.frame(fastType = character(0),
+                            fastDmg = numeric(0),
+                            fastDps = numeric(0),
+                            chargeType = character(0),
+                            chargeDmg = numeric(0),
+                            chargeDps = numeric(0),
+                            stringsAsFactors = FALSE)
+
+#for (i in 1:dim(dpsData)[1]){
+for (i in 1:100){
+  if (sum(fastMovesData$Move == dpsData$Fast.Move[i]) == 1) {
+    fastMoveDataTemp = fastMovesData[fastMovesData$Move == dpsData$Fast.Move[i],
+                                       colnames(fastMovesData) != 'Move']
+  } else {
+    fastMoveDataTemp = c(NA, NA, NA)
+  }
+  
+  if (sum(chargedMovesData$Move == dpsData$Charged.Move[i]) == 1) {
+    chargedMoveDataTemp = chargedMovesData[chargedMovesData$Move == dpsData$Charged.Move[i],
+                                     colnames(chargedMovesData) != 'Move']
+  } else {
+    chargedMoveDataTemp = c(NA, NA, NA)
+  }
+  
+  extraDataTemp = rbind( extraDataTemp, unname(unlist(c(fastMoveDataTemp, chargedMoveDataTemp))), stringsAsFactors = FALSE)
+}
+
+colnames(extraDataTemp) = c('fastType', 'fastDmg', 'fastDps', 'chargeType', 'chargeDmg', 'chargeDps')
 ```
 
