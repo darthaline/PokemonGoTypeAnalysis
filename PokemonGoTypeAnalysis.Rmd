@@ -289,5 +289,7 @@ for (i in 1:100){
 }
 
 colnames(extraDataTemp) = c('fastType', 'fastDmg', 'fastDps', 'chargeType', 'chargeDmg', 'chargeDps')
+
+# dpsData = colbind(dpsData, extraDataTemp)
 ```
 
