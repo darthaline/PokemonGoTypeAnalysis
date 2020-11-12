@@ -258,7 +258,7 @@ attackerPokeResists <- attackerPokeStats[ , colnames(attackerPokeStats) %in% c('
 attackerPokeResists
 ```
 
-```{r CollateDpsMoveDataAndTypes, warning=FALSE, message=FALSE}
+```{r CollateDpsMoveDataAndTypes, warning=FALSE, message=FALSE, eval=FALSE}
 
 # making the data frame for the extra data
 extraDataTemp <- data.frame(fastType = character(0),
@@ -269,8 +269,7 @@ extraDataTemp <- data.frame(fastType = character(0),
                             chargeDps = numeric(0),
                             stringsAsFactors = FALSE)
 
-#for (i in 1:dim(dpsData)[1]){
-for (i in 1:100){
+for (i in 1:dim(dpsData)[1]){
   if (sum(fastMovesData$Move == dpsData$Fast.Move[i]) == 1) {
     fastMoveDataTemp = fastMovesData[fastMovesData$Move == dpsData$Fast.Move[i],
                                        colnames(fastMovesData) != 'Move']
@@ -290,8 +289,15 @@ for (i in 1:100){
 
 colnames(extraDataTemp) = c('fastType', 'fastDmg', 'fastDps', 'chargeType', 'chargeDmg', 'chargeDps')
 
-# dpsData = colbind(dpsData, extraDataTemp)
+dpsDataExtended <- cbind(dpsData, extraDataTemp, stringsAsFactors = FALSE)
+
+write.table(dpsDataExtended, file = file.path('data', 'dpsDataExtended.csv'), sep =",")
 ```
+
+```{r CollateDpsMoveDataAndTypesRead}
+dpsDataExtended <- read.csv(file = file.path('data', 'dpsDataExtended.csv'))
+```
+
 
 ```{r findAttackerMoveSets}
 
