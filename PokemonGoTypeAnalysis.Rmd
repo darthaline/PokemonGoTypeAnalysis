@@ -168,24 +168,38 @@ chargedMovesData
 
 ### Resistor Types
 
+```{r pokemonInput}
+inputPokemon <- 'Bronzor'
+```
+
 ```{r moveTypeInputs}
 #input 2 movetypes, sort alphabetically
 #moveTypes <- c('dragon', 'psychic')
-moveTypes <- c('poison', 'dark')
-#moveTypes <- c('ghost', 'psychic')
+#moveTypes <- c('poison', 'dark', 'fire')
+moveTypes <- c('ghost', 'psychic')
+#moveTypes <- c('steel', 'psychic', 'normal')
 moveTypes <- sort(moveTypes)
 moveTypes
 ```
 
 ```{r}
-attackerTypes <- fullDefendingTable[,c('primary', 'secondary', moveTypes[1],moveTypes[2])]
+attackerTypes <- fullDefendingTable[,c('primary', 'secondary', moveTypes)]
 attackerTypes
 
 ```
 
 ```{r}
-chosenResisters <- attackerTypes[ attackerTypes[,moveTypes[1]] < 1 & attackerTypes[,moveTypes[2]] < 1, ]
-chosenResisters
+#chosenResisters <- attackerTypes[ attackerTypes[,moveTypes[1]] < 1 & attackerTypes[,moveTypes[2]] < 1, ]
+
+#chosenResisters <- attackerTypes[ attackerTypes[,moveTypes[1]] < 1 & attackerTypes[,moveTypes[2]] < 1 & attackerTypes[,moveTypes[3]] < 1, ]
+
+#chosenResisters
+
+temp <- lapply(moveTypes,function(x){attackerTypes[,x]<1})
+
+temp = data.frame(temp)
+
+temp
 ```
 
 ### Resistor pokemon
@@ -211,10 +225,6 @@ statsDataResistors[statsDataResistors$PokedexNumber < 650,]
 ```
 
 ### Attacker Pokemon
-
-```{r pokemonInput}
-inputPokemon <- 'Bronzor'
-```
 
 ```{r FindAttackerPokeType}
 
@@ -301,15 +311,44 @@ dpsDataExtended <- read.csv(file = file.path('data', 'dpsDataExtended.csv'))
 
 ```{r findAttackerMoveSets}
 
-attackerPokeMoveSets <- dpsData[dpsData$Pokemon == inputPokemon,]
+attackerPokeMoveSets <- dpsDataExtended[dpsDataExtended$Pokemon == inputPokemon,]
 
 attackerPokeMoveSets
 ```
 
+```{r findAttackerMoveTypes}
+
+attackerPokeMoveTypes <- unique(c(attackerPokeMoveSets$fastType,attackerPokeMoveSets$chargeType))
+attackerPokeMoveTypes
+
+```
+
+
 ```{r findResistorMoveSets}
 
-resistorPokeMoveSets <- dpsData[dpsData$Pokemon %in% statsDataResistors$Name,]
+resistorPokeMoveSets <- dpsDataExtended[dpsDataExtended$Pokemon %in% statsDataResistors$Name,]
 
 resistorPokeMoveSets
+```
+
+```{r processEffectiveResistorMovesets}
+
+attackerPokeWeaknessTypes <- colnames(attackerPokeWeaknesses)[-c(1,2)]
+
+effectiveResistorMoveSets <- resistorPokeMoveSets[resistorPokeMoveSets$fastType %in% attackerPokeWeaknessTypes &
+                                                    resistorPokeMoveSets$chargeType %in% attackerPokeWeaknessTypes,]
+effectiveResistorMoveSets
+
+```
+
+```{r processWeakResistorMovesets}
+
+attackerPokeResistsTypes <- colnames(attackerPokeResists)[-c(1,2)]
+attackerPokeResistsTypes
+
+weakResistorMoveSets <- resistorPokeMoveSets[!(resistorPokeMoveSets$fastType %in% attackerPokeResistsTypes |
+                                               resistorPokeMoveSets$chargeType %in% attackerPokeResistsTypes),]
+weakResistorMoveSets
+
 ```
 
